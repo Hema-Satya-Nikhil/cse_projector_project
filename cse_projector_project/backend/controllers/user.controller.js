@@ -1,6 +1,4 @@
 import User from '../models/User.model.js';
-import * as emailService from '../services/email.service.js';
-
 
 // @desc    Get all users
 // @route   GET /api/users

@@ -1,7 +1,6 @@
 import Booking from '../models/Booking.model.js';
 import Projector from '../models/Projector.model.js';
 import Activity from '../models/Activity.model.js';
-import * as emailService from '../services/email.service.js';
 
 // @desc    Get all bookings
 // @route   GET /api/bookings
@@ -132,23 +131,6 @@ export const createBooking = async (req, res) => {
     // Populate booking data
     await booking.populate('projector', 'name brand model');
     await booking.populate('user', 'name email designation');
-
-    // Send booking confirmation email
-    try {
-      await emailService.sendBookingConfirmation(
-        req.user.email,
-        req.user.name,
-        {
-          projectorName: projector.name,
-          startTime,
-          endTime,
-          purpose
-        }
-      );
-    } catch (emailError) {
-      console.error('Failed to send booking confirmation email:', emailError);
-      // Don't fail the request if email fails
-    }
 
     res.status(201).json({
       success: true,

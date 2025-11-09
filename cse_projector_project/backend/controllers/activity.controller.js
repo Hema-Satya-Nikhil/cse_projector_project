@@ -1,5 +1,4 @@
 import Activity from '../models/Activity.model.js';
-import * as emailService from '../services/email.service.js';
 
 // @desc    Get recent activities
 // @route   GET /api/activities/recent

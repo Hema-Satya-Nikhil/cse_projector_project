@@ -1,6 +1,5 @@
 import Projector from '../models/Projector.model.js';
 import Activity from '../models/Activity.model.js';
-import * as emailService from '../services/email.service.js';
 
 // @desc    Get all projectors
 // @route   GET /api/projectors
@@ -196,19 +195,6 @@ export const checkOutProjector = async (req, res) => {
     // Populate user data
     await projector.populate('currentUser', 'name email designation');
 
-    // Send check-out notification email
-    try {
-      // Correct notification: user has checked OUT the projector
-      await emailService.sendCheckOutNotification(
-        req.user.email,
-        req.user.name,
-        projector.name
-      );
-    } catch (emailError) {
-      console.error('Failed to send check-out notification email:', emailError);
-      // Don't fail the request if email fails
-    }
-
     res.status(200).json({
       success: true,
       message: 'Projector checked out successfully',
@@ -261,19 +247,6 @@ export const checkInProjector = async (req, res) => {
 
     // Populate user data
     await projector.populate('lastUsedBy', 'name email designation');
-
-    // Send check-in notification email
-    try {
-      // Correct notification: user has checked IN the projector
-      await emailService.sendCheckInNotification(
-        req.user.email,
-        req.user.name,
-        projector.name
-      );
-    } catch (emailError) {
-      console.error('Failed to send check-in notification email:', emailError);
-      // Don't fail the request if email fails
-    }
 
     res.status(200).json({
       success: true,
