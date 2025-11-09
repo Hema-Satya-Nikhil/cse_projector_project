@@ -49,24 +49,6 @@ const userSchema = new mongoose.Schema({
   isActive: {
     type: Boolean,
     default: true
-  },
-  isVerified: {
-    type: Boolean,
-    default: false
-  },
-  verifiedAt: {
-    type: Date,
-    default: null
-  },
-  verificationResend: {
-    count: {
-      type: Number,
-      default: 0
-    },
-    lastReset: {
-      type: Date,
-      default: null
-    }
   }
 }, {
   timestamps: true

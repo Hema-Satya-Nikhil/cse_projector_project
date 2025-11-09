@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react';
-import { Settings, Plus, BarChart3, Activity, Users } from 'lucide-react';
+import { Settings, Plus, BarChart3, Activity, Users, Download, FileText, ExternalLink } from 'lucide-react';
 import { projectorAPI, activityAPI } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import AddProjectorModal from '../components/AddProjectorModal';
 import StatsCard from '../components/StatsCard';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const AdminPanel = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [projectors, setProjectors] = useState([]);
   const [activities, setActivities] = useState([]);
   const [stats, setStats] = useState(null);
@@ -74,6 +77,96 @@ const AdminPanel = () => {
   const handleAddSuccess = () => {
     setShowAddModal(false);
     fetchData();
+  };
+
+  const exportToPDF = () => {
+    try {
+      const doc = new jsPDF();
+      
+      // Title
+      doc.setFontSize(20);
+      doc.setTextColor(40, 40, 40);
+      doc.text('Projector Activity Logs Report', 14, 22);
+      
+      // Subtitle
+      doc.setFontSize(10);
+      doc.setTextColor(100, 100, 100);
+      doc.text(`Generated on: ${new Date().toLocaleString('en-US', { 
+        month: 'long', 
+        day: 'numeric', 
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      })}`, 14, 30);
+      doc.text(`Total Activities: ${activities.length}`, 14, 36);
+      
+      // Table
+      const tableData = activities.map(activity => [
+        activity.user?.name || 'N/A',
+        activity.action || 'N/A',
+        activity.projector?.name || 'N/A',
+        activity.notes || '-',
+        new Date(activity.createdAt).toLocaleString('en-US', {
+          month: '2-digit',
+          day: '2-digit',
+          year: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true
+        })
+      ]);
+
+      doc.autoTable({
+        startY: 45,
+        head: [['User', 'Action', 'Projector', 'Notes', 'Date & Time']],
+        body: tableData,
+        theme: 'striped',
+        headStyles: {
+          fillColor: [37, 99, 235],
+          textColor: 255,
+          fontSize: 10,
+          fontStyle: 'bold'
+        },
+        styles: {
+          fontSize: 9,
+          cellPadding: 3
+        },
+        columnStyles: {
+          0: { cellWidth: 35 },
+          1: { cellWidth: 25 },
+          2: { cellWidth: 35 },
+          3: { cellWidth: 45 },
+          4: { cellWidth: 40 }
+        }
+      });
+
+      // Footer
+      const pageCount = doc.internal.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(150);
+        doc.text(
+          `Page ${i} of ${pageCount}`,
+          doc.internal.pageSize.getWidth() / 2,
+          doc.internal.pageSize.getHeight() - 10,
+          { align: 'center' }
+        );
+        doc.text(
+          'CSE Projector Management System',
+          14,
+          doc.internal.pageSize.getHeight() - 10
+        );
+      }
+
+      // Save
+      doc.save(`activity-logs-${new Date().toISOString().split('T')[0]}.pdf`);
+      toast.success('PDF exported successfully!');
+    } catch (error) {
+      console.error('PDF export error:', error);
+      toast.error('Failed to export PDF');
+    }
   };
 
   // Check if user is admin
@@ -214,7 +307,25 @@ const AdminPanel = () => {
 
       {/* Recent Activity */}
       <div className="card">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Activity Log</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold text-gray-900">Recent Activity Log (Last 50)</h2>
+          <div className="flex gap-3">
+            <button
+              onClick={() => navigate('/logs')}
+              className="btn bg-gray-600 hover:bg-gray-700 text-white flex items-center space-x-2"
+            >
+              <ExternalLink className="h-4 w-4" />
+              <span>View Detailed Logs</span>
+            </button>
+            <button
+              onClick={exportToPDF}
+              className="btn btn-primary flex items-center space-x-2"
+            >
+              <Download className="h-4 w-4" />
+              <span>Export to PDF</span>
+            </button>
+          </div>
+        </div>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -237,7 +348,7 @@ const AdminPanel = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {activities.slice(0, 20).map((activity) => (
+              {activities.slice(0, 50).map((activity) => (
                 <tr key={activity._id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {activity.user?.name}

@@ -122,16 +122,20 @@ const BookingModal = ({ projector, onClose, onSuccess }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Purpose
+              Purpose *
             </label>
             <input
               type="text"
               name="purpose"
+              required
               value={formData.purpose}
               onChange={handleChange}
-              placeholder="e.g., Lecture, Presentation"
+              placeholder="e.g., Data Structures Lecture, Project Presentation"
               className="input"
             />
+            <p className="text-xs text-gray-500 mt-1">
+              Please specify the purpose for using the projector
+            </p>
           </div>
 
           <div>

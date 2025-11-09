@@ -2,11 +2,11 @@
   "name": "cse-projector-backend",
   "version": "1.0.0",
   "description": "Backend for CSE Projector Management System - Developed by Satya Nikhil",
-  "main": "server.js",
+  "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "seed": "node scripts/seed.js"
   },
   "keywords": [

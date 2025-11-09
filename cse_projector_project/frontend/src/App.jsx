@@ -4,6 +4,7 @@ import { useAuth } from './context/AuthContext';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import AdminPanel from './pages/AdminPanel';
+import ProjectorLogs from './pages/ProjectorLogs';
 import About from './pages/About';
 import Layout from './components/Layout';
 import PrivateRoute from './components/PrivateRoute';
@@ -34,6 +35,7 @@ function App() {
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="admin" element={<AdminPanel />} />
+            <Route path="logs" element={<ProjectorLogs />} />
             <Route path="about" element={<About />} />
           </Route>
 

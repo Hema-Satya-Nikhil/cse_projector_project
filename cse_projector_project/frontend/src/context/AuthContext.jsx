@@ -49,55 +49,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const requestOtp = async ({ email, name }) => {
+  const login = async (credentials) => {
     try {
-      const response = await authAPI.requestOtp({ email, name });
-      return {
-        success: true,
-        message: response.data?.message || 'OTP sent successfully',
-        expiresIn: response.data?.expiresIn || 600
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.message || 'Failed to send OTP',
-      };
-    }
-  };
-
-  const verifyOtp = async ({ email, otp, name }) => {
-    try {
-      const response = await authAPI.verifyOtp({ email, otp, name });
-
-      const { token, user: profile, credentials } = response.data;
-
-      if (token && profile) {
-        persistSession(token, profile);
-      }
-
-      return {
-        success: true,
-        user: profile,
-        credentials: credentials || null,
-        message: response.data?.message || 'OTP verified successfully'
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.message || 'Failed to verify OTP'
-      };
-    }
-  };
-
-  const loginWithPassword = async (credentials) => {
-    try {
-      const payload = {
-        identifier: credentials.identifier,
-        email: credentials.identifier,
-        password: credentials.password
-      };
-
-      const response = await authAPI.login(payload);
+      const response = await authAPI.login(credentials);
       const { token, user: profile } = response.data;
 
       persistSession(token, profile);
@@ -107,6 +61,21 @@ export const AuthProvider = ({ children }) => {
       return {
         success: false,
         message: error.response?.data?.message || 'Login failed'
+      };
+    }
+  };
+
+  const register = async (userData) => {
+    try {
+      const response = await authAPI.register(userData);
+      return {
+        success: true,
+        message: response.data?.message || 'Registration successful'
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Registration failed'
       };
     }
   };
@@ -122,9 +91,8 @@ export const AuthProvider = ({ children }) => {
     user,
     loading,
     isAuthenticated,
-    requestOtp,
-    verifyOtp,
-    loginWithPassword,
+    login,
+    register,
     logout,
   };
 

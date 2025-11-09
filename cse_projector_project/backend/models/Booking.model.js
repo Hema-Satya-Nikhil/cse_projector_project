@@ -21,6 +21,7 @@ const bookingSchema = new mongoose.Schema({
   },
   purpose: {
     type: String,
+    required: [true, 'Purpose is required - please specify why you need the projector'],
     trim: true
   },
   status: {

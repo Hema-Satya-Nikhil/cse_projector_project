@@ -56,15 +56,15 @@ const seedData = async () => {
     ]);
     console.log('✅ Created users');
 
-    // Create projectors
+    // Create projectors (EPSON and WZATCO - Real CSE Department Projectors)
     const projectors = await Projector.create([
       {
-        name: 'Epson EB-X05',
-        brand: 'Epson',
+        name: 'EPSON Projector',
+        brand: 'EPSON',
         model: 'EB-X05',
-        serialNumber: 'EPS-001-2024',
+        serialNumber: 'EPSON-CSE-001',
         status: 'available',
-        location: 'CSE Department Store',
+        location: 'CSE Department Store Room',
         specifications: {
           resolution: '1024 x 768 (XGA)',
           brightness: '3300 lumens',
@@ -72,50 +72,20 @@ const seedData = async () => {
         }
       },
       {
-        name: 'BenQ MH535A',
-        brand: 'BenQ',
-        model: 'MH535A',
-        serialNumber: 'BNQ-002-2024',
+        name: 'WZATCO Projector',
+        brand: 'WZATCO',
+        model: 'T6',
+        serialNumber: 'WZATCO-CSE-002',
         status: 'available',
-        location: 'CSE Department Store',
+        location: 'CSE Department Store Room',
         specifications: {
           resolution: '1920 x 1080 (Full HD)',
-          brightness: '3600 lumens',
-          connectivity: ['HDMI', 'VGA', 'USB', 'Wireless']
-        }
-      },
-      {
-        name: 'Sony VPL-DX221',
-        brand: 'Sony',
-        model: 'VPL-DX221',
-        serialNumber: 'SNY-003-2024',
-        status: 'checked-out',
-        currentUser: users[1]._id,
-        checkedOutAt: new Date(),
-        location: 'Room 301',
-        specifications: {
-          resolution: '1024 x 768 (XGA)',
-          brightness: '2800 lumens',
-          connectivity: ['HDMI', 'VGA']
-        }
-      },
-      {
-        name: 'ViewSonic PA503S',
-        brand: 'ViewSonic',
-        model: 'PA503S',
-        serialNumber: 'VWS-004-2024',
-        status: 'available',
-        lastUsedBy: users[2]._id,
-        lastUsedAt: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
-        location: 'CSE Department Store',
-        specifications: {
-          resolution: '800 x 600 (SVGA)',
-          brightness: '3600 lumens',
-          connectivity: ['HDMI', 'VGA', 'USB']
+          brightness: '7500 lumens',
+          connectivity: ['HDMI', 'VGA', 'USB', 'WiFi', 'Bluetooth']
         }
       }
     ]);
-    console.log('✅ Created projectors');
+    console.log('✅ Created projectors (EPSON & WZATCO)');
 
     // Create sample activities
     await Activity.create([
@@ -123,31 +93,13 @@ const seedData = async () => {
         user: users[0]._id,
         projector: projectors[0]._id,
         action: 'created',
-        notes: 'Added Epson EB-X05 to inventory'
+        notes: 'Added EPSON Projector to CSE Department inventory'
       },
       {
         user: users[0]._id,
         projector: projectors[1]._id,
         action: 'created',
-        notes: 'Added BenQ MH535A to inventory'
-      },
-      {
-        user: users[2]._id,
-        projector: projectors[3]._id,
-        action: 'check-out',
-        notes: 'Checked out for Data Structures lecture'
-      },
-      {
-        user: users[2]._id,
-        projector: projectors[3]._id,
-        action: 'check-in',
-        notes: 'Returned after lecture'
-      },
-      {
-        user: users[1]._id,
-        projector: projectors[2]._id,
-        action: 'check-out',
-        notes: 'Checked out for Database Management Systems lab'
+        notes: 'Added WZATCO Projector to CSE Department inventory'
       }
     ]);
     console.log('✅ Created activities');
